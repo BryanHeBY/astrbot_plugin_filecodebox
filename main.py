@@ -1,7 +1,7 @@
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
-from astrbot.api.message_components import File
+from astrbot.api.message_components import Image, File
 import requests
 import tempfile
 
@@ -46,18 +46,25 @@ class FileCodeBox(Star):
             detail = r_json["detail"]
             if detail["name"] == "Text":
                 yield event.plain_result(f"{detail['text']}")
-            else:
+            elif detail["name"].endswith(("jpg", "jpeg", "png", "gif")):
                 download_url = f"{self.url}{detail['text']}"
-                r = requests.get(download_url)
-                tmp = tempfile.NamedTemporaryFile(delete=False)
-                try:
-                    tmp.write(r.content)
-                    tmp.flush()
-                    chain = [
-                        File(name=detail['name'], file=tmp.name)
-                    ]
-                    yield event.chain_result(chain)
-                finally:
-                    tmp.close()  # 文件关闭即删除
+                chain = [
+                    Image.fromURL(url=download_url)
+                ]
+                yield event.chain_result(chain)
+            else:
+                # download_url = f"{self.url}{detail['text']}"
+                # r = requests.get(download_url)
+                # tmp = tempfile.NamedTemporaryFile(delete=False)
+                # try:
+                #     tmp.write(r.content)
+                #     tmp.flush()
+                #     chain = [
+                #         File(name=detail['name'], file=tmp.name)
+                #     ]
+                #     yield event.chain_result(chain)
+                # finally:
+                #     tmp.close()  # 文件关闭即删除
+                yield event.plain_result(f"暂不支持下载文件类型: {detail['name']}")
         else :
             yield event.plain_result(f"取件失败，错误码: {r_json['code']}")
