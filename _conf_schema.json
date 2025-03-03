@@ -1,0 +1,8 @@
+{
+    "filecodebox_url": {
+        "description": "FileCodeBox 网址",
+        "type": "string",
+        "hint": "请输入您部署的 FileCodeBox 服务 url 地址",
+        "obvious_hint": true
+    }
+}
