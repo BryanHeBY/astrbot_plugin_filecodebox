@@ -49,7 +49,7 @@ class FileCodeBox(Star):
             else:
                 download_url = f"{self.url}{detail['text']}"
                 r = requests.get(download_url)
-                tmp = tempfile.NamedTemporaryFile(delete=True)
+                tmp = tempfile.NamedTemporaryFile(delete=False)
                 try:
                     tmp.write(r.content)
                     tmp.flush()
